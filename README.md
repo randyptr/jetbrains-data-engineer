@@ -197,9 +197,7 @@ In BigQuery console, create a dataset named `dwh` in your project with any regio
 
 ## Design decisions
 
-- **BigQuery**: serverless, no infrastructure to manage, free tier sufficient for this scale
-- **Layered architecture**: raw → staging → DWH → mart mirrors production warehouse patterns
-- **Immutable raw layer**: raw tables are never modified — full audit trail preserved
-- **DQ alerts table**: surfaces data issues without blocking the pipeline — errors are logged, not thrown
-- **Deduplication via ROW_NUMBER()**: idempotent, preserves the earliest record
+- **BigQuery**: serverless no infrastructure to manage
+- **Layered architecture**: raw -> staging -> DWH -> mart, mirrors production warehouse patterns
+- **DQ warning table**: for error logging
 - **Star schema**: separates descriptive attributes (dims) from measurable events (facts) for clean analytical queries
