@@ -21,34 +21,60 @@ The pipeline follows a 4-layer warehouse architecture:
 
 ```
 -------------------------------------------------------
-│  SOURCE LAYER  (1_schema + 2_seed)                  │
-│  raw_candidates · raw_applications · raw_interviews │
-│  Immutable — never modified after load              │
--------------------------------------------------------
-                        │
-                        ▼
--------------------------------------------------------
-│  STAGING LAYER  (3_staging)                         │
-│  stg_candidates · stg_applications · stg_interviews │
-│  Cleaned · Deduplicated · Validated                 │
+│  SOURCE LAYER  (1-schema + 2-seed)                  │
 │                                                     │
-│  dq_alerts — logs all data quality issues found     │
+│  Tables: raw_candidates, raw_applications,          │
+│          raw_interviews                             │
+│                                                     │
+│  What it does:                                      │
+│    - Stores the original ATS data as-is             │
+│    - Never modified or deleted after load           │
+│    - Acts as the single source of truth             │
 -------------------------------------------------------
                         │
                         ▼
 -------------------------------------------------------
-│  DWH LAYER  (4_dwh)                                 │
-│  dim_candidates · dim_roles                         │
-│  fact_applications · fact_interviews                │
-│  Star schema optimized for analytical queries       │
+│  STAGING LAYER  (3-staging)                         │
+│                                                     │
+│  Tables: stg_candidates, stg_applications,          │
+│          stg_interviews                             │
+│                                                     │
+│  What it does:                                      │
+│    - Removes invalid and incomplete records         │
+│    - Deduplicates repeated interview entries        │
+│    - Validates outcomes, role levels, and dates     │
+│                                                     │
+│  dq_alerts: logs every data quality issue found     │
+│             without blocking the pipeline           │
 -------------------------------------------------------
                         │
                         ▼
 -------------------------------------------------------
-│  DATA MART  (5_mart + 6_analytics)                   │
-│  dm_hiring_process                                   │
-│  monthly_active_pipeline · cumulative_hires_by_source│
-│  Business-ready · One row per application            │
+│  DWH LAYER  (4-dwh)                                 │
+│                                                     │
+│  Tables: dim_candidates, dim_roles,                 │
+│          fact_applications, fact_interviews         │
+│                                                     │
+│  What it does:                                      │
+│    - Organizes data into a star schema              │
+│    - Separates descriptive attributes (dims)        │
+│      from measurable events (facts)                 │
+│    - Adds computed columns like days_to_decision    │
+│      and pipeline_status                            │
+-------------------------------------------------------
+                        │
+                        ▼
+-------------------------------------------------------
+│  DATA MART  (5-mart + 6-analytics)                  │
+│                                                     │
+│  Tables: dm_hiring_process,                         │
+│          monthly_active_pipeline,                   │
+│          cumulative_hires_by_source                 │
+│                                                     │
+│  What it does:                                      │
+│    - Joins all layers into one business-ready table │
+│    - One row per application with all metrics       │
+│    - Exposes analytical views for direct querying   │
 -------------------------------------------------------
 ```
 
