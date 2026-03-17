@@ -164,13 +164,14 @@ Counts how many applications were open in each calendar month. An application co
 ```sql
 SELECT * FROM dwh.monthly_active_pipeline;
 ```
-
+![analytics_monthly_active_pipeline](./image/analytics_monthly_active_pipeline.png)
 ### Cumulative hires by source
 Shows how each sourcing channel (LinkedIn, Referral, Career Page, Job Board) accumulates hires over time. A hire is a closed application with at least one Passed interview. Uses `SUM() OVER()` window function for the running total.
 
 ```sql
 SELECT * FROM dwh.cumulative_hires_by_source;
 ```
+![analytics_cumulative_hires_by_source](./image/analytics_cumulative_hires_by_source.png)
 
 ---
 
