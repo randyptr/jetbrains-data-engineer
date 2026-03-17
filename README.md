@@ -135,24 +135,6 @@ The staging layer also silently filters:
 
 ---
 
-## Analytical queries
-
-### Monthly active pipeline
-Counts how many applications were open in each calendar month. An application counts as active in every month between its `applied_date` and `decision_date`. Uses `GENERATE_DATE_ARRAY` + `UNNEST` to expand each application into one row per active month.
-
-```sql
-SELECT * FROM dwh.monthly_active_pipeline;
-```
-
-### Cumulative hires by source
-Shows how each sourcing channel (LinkedIn, Referral, Career Page, Job Board) accumulates hires over time. A hire is a closed application with at least one Passed interview. Uses `SUM() OVER()` window function for the running total.
-
-```sql
-SELECT * FROM dwh.cumulative_hires_by_source;
-```
-
----
-
 ## How to run
 
 ### Prerequisites
@@ -171,6 +153,24 @@ In BigQuery console, create a dataset named `dwh` in your project with any regio
 | 4 | `4_dwh.sql` | Builds star schema |
 | 5 | `5_mart.sql` | Creates `dm_hiring_process` |
 | 6 | `6_analytics.sql` | Creates analytical views |
+
+---
+
+## Analytical queries
+
+### Monthly active pipeline
+Counts how many applications were open in each calendar month. An application counts as active in every month between its `applied_date` and `decision_date`. Uses `GENERATE_DATE_ARRAY` + `UNNEST` to expand each application into one row per active month.
+
+```sql
+SELECT * FROM dwh.monthly_active_pipeline;
+```
+
+### Cumulative hires by source
+Shows how each sourcing channel (LinkedIn, Referral, Career Page, Job Board) accumulates hires over time. A hire is a closed application with at least one Passed interview. Uses `SUM() OVER()` window function for the running total.
+
+```sql
+SELECT * FROM dwh.cumulative_hires_by_source;
+```
 
 ---
 
