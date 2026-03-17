@@ -82,30 +82,8 @@ The pipeline follows a 4-layer warehouse architecture:
 
 ## Star schema
 
-The DWH layer is modeled as a star schema with `fact_applications` at the center:
-
-```
-                    ---------------
-                    │  dim_roles  │
-                    │-------------│
-                    │ role_level  │
-                    │ level_order │
-                    ---------------
-                           │
-        -------------------|----------------------
-        │                  │                     │
------------------- ------------------- -----------------------
-│ dim_candidates │ │fact_applications│ │  fact_interviews    │
-│----------------│ │-----------------│ │---------------------│
-│ candidate_id   │ │ app_id          │ │ interview_id        │
-│ full_name      │ │ candidate_id    │ │ app_id              │
-│ source         │ │ role_level      │ │ interview_date      │
-│ created_date   │ │ applied_date    │ │ outcome             │
------------------- │ decision_date   │ -----------------------
-                   │ days_to_dec.    │
-                   │ pipeline_status │
-                   -------------------
-```
+The DWH layer is modeled as a star schema
+![Database schema](./image/star_schema.png)
 
 ---
 
